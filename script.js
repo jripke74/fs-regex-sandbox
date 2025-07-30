@@ -1,46 +1,34 @@
-const regexPattern = document.querySelector("#pattern");
-const stringToTest = document.querySelector("#test-string");
-const testButton = document.querySelector("#test-btn");
-const testResult = document.querySelector("#result");
-const caseInsensitiveFlag = document.querySelector("#i");
-const globalFlag = document.querySelector("#g");
+const regexPattern = document.getElementById("pattern");
+const stringToTest = document.getElementById("test-string");
+const testButton = document.getElementById("test-btn");
+const testResult = document.getElementById("result");
+const caseInsensitiveFlag = document.getElementById("i");
+const globalFlag = document.getElementById("g");
 
-let sFlag = ["isFalse", "gFalse"];
+function getFlags() {
+    const iflag = caseInsensitiveFlag.checked;
+    const gflag = globalFlag.checked;
 
-function getFlags(input) {
-  if (input === "iTrue") {
-    sFlag = sFlag.map((e) => e.replace("iFalse", "iTrue"));
-  }
-
-  if (input === "iFalse") {
-    sFlag = sFlag.map((e) => e.replace("iTrue", "iFalse"));
-  }
-
-  if (input === "gTrue") {
-    sFlag = sFlag.map((e) => e.replace("gFalse", "gTrue"));
-  }
-
-  if (input === "gFalse") {
-    sFlag = sFlag.map((e) => e.replace("gTrue", "gFalse"));
-  }
-
-  let returnFlag = "";
-
-  if (sFlag.includes("iFalse") && sFlag.includes("gFalse")) {
-    returnFlag = "";
-  }
-
-  if (sFlag.includes("iTrue") && sFlag.includes("gFalse")) {
-    returnFlag = "i";
-  }
-
-  if (sFlag.includes("iFalse") && sFlag.includes("gTrue")) {
-    returnFlag = "g";
-  }
-
-  if (sFlag.includes("iTrue") && sFlag.includes("gTrue")) {
-    returnFlag = "ig";
-  }
-
-  return returnFlag;
+    if (iflag && gflag) {
+        return "ig";
+    } else if (iflag) {
+        return "i";
+    } else if (gflag) {
+        return "g";
+    } else {
+        return "";
+    }
 }
+
+function getMatches() {
+    const flags = getFlags();
+    const regex = new RegExp(regexPattern.value, flags)
+    let matches = stringToTest.innerText.match(regex)
+    if (matches) {
+        testResult.innerText = matches.join(", ")
+        stringToTest.innerHTML = stringToTest.innerHTML.replace(regex, (content) => `<span class='highlight'>${content}</span>`)
+    } else {testResult.innerText = "no match"}
+}
+
+
+testButton.addEventListener("click", getMatches)
